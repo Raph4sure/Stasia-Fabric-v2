@@ -6,7 +6,7 @@ import { getAuthUser } from "@/src/server/auth";
 
 export async function PATCH(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> } // Type params as a Promise
 ) {
     try {
         await initializeDatabase();
@@ -26,7 +26,10 @@ export async function PATCH(
             );
         }
 
-        const userId = Number(params.id);
+        // Await params before reading properties
+        const resolvedParams = await params;
+        const userId = Number(resolvedParams.id);
+
         if (isNaN(userId)) {
             return NextResponse.json(
                 { error: "Invalid user ID" },
