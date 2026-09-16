@@ -2573,7 +2573,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                                         onClick={() =>
                                             fetchDatabaseTable(table.name)
                                         }
-                                        className={`w-full text-left px-3 py-2 rounded-lg text-xs font-mono transition ${
+                                        className={`w-full text-left px-3 py-2 rounded-lg text-xs font-mono transition dark:text-stone-500 ${
                                             selectedDatabaseTable === table.name
                                                 ? "bg-stone-900 text-amber-300"
                                                 : "text-stone-700 hover:bg-stone-100"
