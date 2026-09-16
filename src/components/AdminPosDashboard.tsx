@@ -22,6 +22,7 @@ import {
 import { Product, CartItem, Sale, User } from "../types";
 import { formatPrice, formatDateTime, fetchWithAuth } from "../lib/api";
 import { invalidateClientCache } from "../lib/clientCache";
+import { serverCache } from "../server/cache";
 
 interface AdminPosDashboardProps {
     currentUser: User;
@@ -245,6 +246,8 @@ export const AdminPosDashboard: React.FC<AdminPosDashboardProps> = ({
             const salesRes = res.sales;
 
             // Update parent data (refresh stock levels and logs)
+            // serverCache.invalidateTags(["products"]);
+            // serverCache.invalidatePrefix("products:");
             invalidateClientCache("products");
             await onRefreshData();
 
