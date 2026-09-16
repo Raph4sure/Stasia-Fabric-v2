@@ -189,190 +189,190 @@ async function runDatabaseInitialization() {
         const existingProducts = await client.execute(`SELECT COUNT(*) as count FROM products;`);
         const productCount = Number(existingProducts.rows[0]?.count || 0);
 
-        if (productCount === 0) {
-            const seedProducts = [
-                {
-                    title: "Royal Ankara Silk Kimono Robe",
-                    codeNo: "CLT-101",
-                    category: "Clothes",
-                    pricePerUnit: 14500,
-                    quantityInStock: 18,
-                    weightPerUnit: 0.65,
-                    isAvailable: true,
-                    images: [
-                        "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=900&auto=format&fit=crop&q=80",
-                        "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=900&auto=format&fit=crop&q=80",
-                    ],
-                },
-                {
-                    title: "Handcrafted Monogram Leather Tote",
-                    codeNo: "BAG-202",
-                    category: "Bags",
-                    pricePerUnit: 22000,
-                    quantityInStock: 8,
-                    weightPerUnit: 1.20,
-                    isAvailable: true,
-                    images: [
-                        "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=900&auto=format&fit=crop&q=80",
-                        "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=900&auto=format&fit=crop&q=80",
-                    ],
-                },
-                {
-                    title: "Aso-Oke Heritage Woven Wrapper (6 Yards)",
-                    codeNo: "WRP-303",
-                    category: "Wrappers",
-                    pricePerUnit: 18500,
-                    quantityInStock: 4,
-                    weightPerUnit: 1.80,
-                    isAvailable: true,
-                    images: [
-                        "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=900&auto=format&fit=crop&q=80",
-                        "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&auto=format&fit=crop&q=80",
-                    ],
-                },
-                {
-                    title: "Swiss Voile Gold Embroidered Lace Fabric",
-                    codeNo: "FAB-404",
-                    category: "Fabrics",
-                    pricePerUnit: 16000,
-                    quantityInStock: 12,
-                    weightPerUnit: 0.90,
-                    isAvailable: true,
-                    images: [
-                        "https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?w=900&auto=format&fit=crop&q=80",
-                        "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=900&auto=format&fit=crop&q=80",
-                    ],
-                },
-                {
-                    title: "Pleated Linen Safari Blazer",
-                    codeNo: "CLT-105",
-                    category: "Clothes",
-                    pricePerUnit: 19500,
-                    quantityInStock: 3,
-                    weightPerUnit: 0.80,
-                    isAvailable: true,
-                    images: [
-                        "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=900&auto=format&fit=crop&q=80",
-                    ],
-                },
-                {
-                    title: "Woven Raffia Shoulder Bag",
-                    codeNo: "BAG-206",
-                    category: "Bags",
-                    pricePerUnit: 11000,
-                    quantityInStock: 15,
-                    weightPerUnit: 0.45,
-                    isAvailable: true,
-                    images: [
-                        "https://images.unsplash.com/photo-1544816155-12df9643f363?w=900&auto=format&fit=crop&q=80",
-                    ],
-                },
-                {
-                    title: "Hand-Dyed Indigo Adire Cotton Fabric (5 Yards)",
-                    codeNo: "FAB-407",
-                    category: "Fabrics",
-                    pricePerUnit: 12500,
-                    quantityInStock: 20,
-                    weightPerUnit: 0.70,
-                    isAvailable: true,
-                    images: [
-                        "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=900&auto=format&fit=crop&q=80",
-                    ],
-                },
-                {
-                    title: "Lustrous Silk Satin Ombré Wrapper",
-                    codeNo: "WRP-308",
-                    category: "Wrappers",
-                    pricePerUnit: 17000,
-                    quantityInStock: 9,
-                    weightPerUnit: 1.40,
-                    isAvailable: true,
-                    images: [
-                        "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=900&auto=format&fit=crop&q=80",
-                    ],
-                },
-                {
-                    title: "Embroidered Silk Caftan with Gold Filigree",
-                    codeNo: "CLT-109",
-                    category: "Clothes",
-                    pricePerUnit: 17500,
-                    quantityInStock: 11,
-                    weightPerUnit: 0.75,
-                    isAvailable: true,
-                    images: [
-                        "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=900&auto=format&fit=crop&q=80",
-                        "https://images.unsplash.com/photo-1550614000-4895a10e1bfd?w=900&auto=format&fit=crop&q=80",
-                    ],
-                },
-                {
-                    title: "Structured Calfskin Saddle Crossbody",
-                    codeNo: "BAG-210",
-                    category: "Bags",
-                    pricePerUnit: 26000,
-                    quantityInStock: 6,
-                    weightPerUnit: 0.85,
-                    isAvailable: true,
-                    images: [
-                        "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?w=900&auto=format&fit=crop&q=80",
-                    ],
-                },
-                {
-                    title: "Heritage Hand-Dyed Adire Silk Wrapper",
-                    codeNo: "WRP-311",
-                    category: "Wrappers",
-                    pricePerUnit: 19500,
-                    quantityInStock: 5,
-                    weightPerUnit: 1.10,
-                    isAvailable: true,
-                    images: [
-                        "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=900&auto=format&fit=crop&q=80",
-                    ],
-                },
-                {
-                    title: "Duchess Satin Rose Gold Brocade (Yard)",
-                    codeNo: "FAB-412",
-                    category: "Fabrics",
-                    pricePerUnit: 9200,
-                    quantityInStock: 14,
-                    weightPerUnit: 0.60,
-                    isAvailable: true,
-                    images: [
-                        "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=900&auto=format&fit=crop&q=80",
-                    ],
-                },
-            ];
+        // if (productCount === 0) {
+        //     const seedProducts = [
+        //         {
+        //             title: "Royal Ankara Silk Kimono Robe",
+        //             codeNo: "CLT-101",
+        //             category: "Clothes",
+        //             pricePerUnit: 14500,
+        //             quantityInStock: 18,
+        //             weightPerUnit: 0.65,
+        //             isAvailable: true,
+        //             images: [
+        //                 "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=900&auto=format&fit=crop&q=80",
+        //                 "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=900&auto=format&fit=crop&q=80",
+        //             ],
+        //         },
+        //         {
+        //             title: "Handcrafted Monogram Leather Tote",
+        //             codeNo: "BAG-202",
+        //             category: "Bags",
+        //             pricePerUnit: 22000,
+        //             quantityInStock: 8,
+        //             weightPerUnit: 1.20,
+        //             isAvailable: true,
+        //             images: [
+        //                 "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=900&auto=format&fit=crop&q=80",
+        //                 "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=900&auto=format&fit=crop&q=80",
+        //             ],
+        //         },
+        //         {
+        //             title: "Aso-Oke Heritage Woven Wrapper (6 Yards)",
+        //             codeNo: "WRP-303",
+        //             category: "Wrappers",
+        //             pricePerUnit: 18500,
+        //             quantityInStock: 4,
+        //             weightPerUnit: 1.80,
+        //             isAvailable: true,
+        //             images: [
+        //                 "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=900&auto=format&fit=crop&q=80",
+        //                 "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=900&auto=format&fit=crop&q=80",
+        //             ],
+        //         },
+        //         {
+        //             title: "Swiss Voile Gold Embroidered Lace Fabric",
+        //             codeNo: "FAB-404",
+        //             category: "Fabrics",
+        //             pricePerUnit: 16000,
+        //             quantityInStock: 12,
+        //             weightPerUnit: 0.90,
+        //             isAvailable: true,
+        //             images: [
+        //                 "https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?w=900&auto=format&fit=crop&q=80",
+        //                 "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=900&auto=format&fit=crop&q=80",
+        //             ],
+        //         },
+        //         {
+        //             title: "Pleated Linen Safari Blazer",
+        //             codeNo: "CLT-105",
+        //             category: "Clothes",
+        //             pricePerUnit: 19500,
+        //             quantityInStock: 3,
+        //             weightPerUnit: 0.80,
+        //             isAvailable: true,
+        //             images: [
+        //                 "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=900&auto=format&fit=crop&q=80",
+        //             ],
+        //         },
+        //         {
+        //             title: "Woven Raffia Shoulder Bag",
+        //             codeNo: "BAG-206",
+        //             category: "Bags",
+        //             pricePerUnit: 11000,
+        //             quantityInStock: 15,
+        //             weightPerUnit: 0.45,
+        //             isAvailable: true,
+        //             images: [
+        //                 "https://images.unsplash.com/photo-1544816155-12df9643f363?w=900&auto=format&fit=crop&q=80",
+        //             ],
+        //         },
+        //         {
+        //             title: "Hand-Dyed Indigo Adire Cotton Fabric (5 Yards)",
+        //             codeNo: "FAB-407",
+        //             category: "Fabrics",
+        //             pricePerUnit: 12500,
+        //             quantityInStock: 20,
+        //             weightPerUnit: 0.70,
+        //             isAvailable: true,
+        //             images: [
+        //                 "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=900&auto=format&fit=crop&q=80",
+        //             ],
+        //         },
+        //         {
+        //             title: "Lustrous Silk Satin Ombré Wrapper",
+        //             codeNo: "WRP-308",
+        //             category: "Wrappers",
+        //             pricePerUnit: 17000,
+        //             quantityInStock: 9,
+        //             weightPerUnit: 1.40,
+        //             isAvailable: true,
+        //             images: [
+        //                 "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=900&auto=format&fit=crop&q=80",
+        //             ],
+        //         },
+        //         {
+        //             title: "Embroidered Silk Caftan with Gold Filigree",
+        //             codeNo: "CLT-109",
+        //             category: "Clothes",
+        //             pricePerUnit: 17500,
+        //             quantityInStock: 11,
+        //             weightPerUnit: 0.75,
+        //             isAvailable: true,
+        //             images: [
+        //                 "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=900&auto=format&fit=crop&q=80",
+        //                 "https://images.unsplash.com/photo-1550614000-4895a10e1bfd?w=900&auto=format&fit=crop&q=80",
+        //             ],
+        //         },
+        //         {
+        //             title: "Structured Calfskin Saddle Crossbody",
+        //             codeNo: "BAG-210",
+        //             category: "Bags",
+        //             pricePerUnit: 26000,
+        //             quantityInStock: 6,
+        //             weightPerUnit: 0.85,
+        //             isAvailable: true,
+        //             images: [
+        //                 "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?w=900&auto=format&fit=crop&q=80",
+        //             ],
+        //         },
+        //         {
+        //             title: "Heritage Hand-Dyed Adire Silk Wrapper",
+        //             codeNo: "WRP-311",
+        //             category: "Wrappers",
+        //             pricePerUnit: 19500,
+        //             quantityInStock: 5,
+        //             weightPerUnit: 1.10,
+        //             isAvailable: true,
+        //             images: [
+        //                 "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=900&auto=format&fit=crop&q=80",
+        //             ],
+        //         },
+        //         {
+        //             title: "Duchess Satin Rose Gold Brocade (Yard)",
+        //             codeNo: "FAB-412",
+        //             category: "Fabrics",
+        //             pricePerUnit: 9200,
+        //             quantityInStock: 14,
+        //             weightPerUnit: 0.60,
+        //             isAvailable: true,
+        //             images: [
+        //                 "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=900&auto=format&fit=crop&q=80",
+        //             ],
+        //         },
+        //     ];
 
-            for (const item of seedProducts) {
-                const check = await client.execute({
-                    sql: `SELECT id FROM products WHERE code_no = $1;`,
-                    args: [item.codeNo],
-                });
-                if (check.rows.length === 0) {
-                    const insertRes = await client.execute({
-                        sql: `INSERT INTO products (title, code_no, category, price_per_unit, quantity_in_stock, weight_per_unit, is_available, created_at)
-                              VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id;`,
-                        args: [
-                            item.title,
-                            item.codeNo,
-                            item.category,
-                            item.pricePerUnit,
-                            item.quantityInStock,
-                            item.weightPerUnit,
-                            item.isAvailable,
-                            new Date().toISOString(),
-                        ],
-                    });
-                    const newProductId = Number(insertRes.rows[0]?.id);
-                    for (const img of item.images) {
-                        await client.execute({
-                            sql: `INSERT INTO product_images (product_id, image_url) VALUES ($1, $2);`,
-                            args: [newProductId, img],
-                        });
-                    }
-                }
-            }
-            console.log("Seeded initial boutique catalog in PostgreSQL.");
-        }
+        //     for (const item of seedProducts) {
+        //         const check = await client.execute({
+        //             sql: `SELECT id FROM products WHERE code_no = $1;`,
+        //             args: [item.codeNo],
+        //         });
+        //         if (check.rows.length === 0) {
+        //             const insertRes = await client.execute({
+        //                 sql: `INSERT INTO products (title, code_no, category, price_per_unit, quantity_in_stock, weight_per_unit, is_available, created_at)
+        //                       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id;`,
+        //                 args: [
+        //                     item.title,
+        //                     item.codeNo,
+        //                     item.category,
+        //                     item.pricePerUnit,
+        //                     item.quantityInStock,
+        //                     item.weightPerUnit,
+        //                     item.isAvailable,
+        //                     new Date().toISOString(),
+        //                 ],
+        //             });
+        //             const newProductId = Number(insertRes.rows[0]?.id);
+        //             for (const img of item.images) {
+        //                 await client.execute({
+        //                     sql: `INSERT INTO product_images (product_id, image_url) VALUES ($1, $2);`,
+        //                     args: [newProductId, img],
+        //                 });
+        //             }
+        //         }
+        //     }
+        //     console.log("Seeded initial boutique catalog in PostgreSQL.");
+        // }
     } catch (err) {
         console.error("PostgreSQL database initialization error:", err);
         throw err;
