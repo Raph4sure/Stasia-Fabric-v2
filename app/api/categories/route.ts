@@ -48,10 +48,10 @@ export async function GET(req: NextRequest) {
 
         return NextResponse.json(result, {
             headers: {
-                ETag: etag,
-                "Cache-Control":
-                    "public, max-age=60, stale-while-revalidate=86400",
-                "X-Cache": "MISS",
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                Pragma: "no-cache",
+                Expires: "0",
+                "X-Cache": cached ? "HIT" : "MISS",
             },
         });
     } catch (err: any) {

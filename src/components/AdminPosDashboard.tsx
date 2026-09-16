@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Product, CartItem, Sale, User } from "../types";
 import { formatPrice, formatDateTime, fetchWithAuth } from "../lib/api";
+import { invalidateClientCache } from "../lib/clientCache";
 
 interface AdminPosDashboardProps {
     currentUser: User;
@@ -244,6 +245,7 @@ export const AdminPosDashboard: React.FC<AdminPosDashboardProps> = ({
             const salesRes = res.sales;
 
             // Update parent data (refresh stock levels and logs)
+            invalidateClientCache("products");
             await onRefreshData();
 
             // Show receipt modal
