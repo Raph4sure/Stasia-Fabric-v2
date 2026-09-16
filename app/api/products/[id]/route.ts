@@ -172,7 +172,8 @@ export async function PATCH(
     }
 
     // Bust caches on mutation
-    serverCache.invalidateTags(['products', `product:${prodId}`]);
+  serverCache.invalidateTags(["products", `product:${prodId}`]);
+  serverCache.invalidatePrefix("products:");
 
     return NextResponse.json({
       ...updatedRow,
@@ -221,7 +222,8 @@ export async function DELETE(
     await db.delete(products).where(eq(products.id, prodId));
 
     // Bust caches
-    serverCache.invalidateTags(['products', `product:${prodId}`]);
+  serverCache.invalidateTags(["products", `product:${prodId}`]);
+  serverCache.invalidatePrefix("products:");
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

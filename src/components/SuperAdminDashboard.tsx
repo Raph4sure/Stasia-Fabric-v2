@@ -40,6 +40,7 @@ import {
 import { Product, Sale, User } from "../types";
 import { formatPrice, formatDateTime, fetchWithAuth } from "../lib/api";
 import { ActionDialog } from "./ActionDialog";
+import { invalidateClientCache } from "../lib/clientCache";
 
 interface SuperAdminDashboardProps {
     currentUser: User;
@@ -658,7 +659,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                     weightPerUnit: weight,
                 }),
             });
-
+            invalidateClientCache("products");
             await onRefreshData();
             setEditingId(null);
         } catch (err: any) {
@@ -678,6 +679,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                 method: "PATCH",
                 body: JSON.stringify({ isAvailable: !currentVal }),
             });
+            invalidateClientCache("products");
             await onRefreshData();
         } catch (err: any) {
             setFormError(err.message || "Failed to toggle product visibility");
@@ -697,6 +699,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                     isAvailable: !currentVal,
                 }),
             });
+            invalidateClientCache("products");
             await onRefreshData();
         } catch (err: any) {
             setStaffErrorMsg(
@@ -722,6 +725,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
             await fetchWithAuth(`/api/products/${productId}`, {
                 method: "DELETE",
             });
+            invalidateClientCache("products");
             await onRefreshData();
         } catch (err: any) {
             setFormError(err.message || "Failed to delete product");

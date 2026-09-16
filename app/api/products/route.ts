@@ -6,6 +6,9 @@ import { getAuthUser } from '@/src/server/auth';
 import { serverCache } from '@/src/server/cache';
 import { isCloudinaryConfigured, uploadToCloudinary } from '@/src/lib/cloudinary';
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -28,16 +31,16 @@ export async function GET(req: NextRequest) {
             status: 304,
             headers: {
               'ETag': cached.etag,
-              'Cache-Control': 'public, max-age=60, stale-while-revalidate=86400',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
             },
           });
         }
         return NextResponse.json(cached.data, {
-          headers: {
-            'ETag': cached.etag,
-            'Cache-Control': 'public, max-age=60, stale-while-revalidate=86400',
-            'X-Cache': 'HIT',
-          },
+            headers: {
+                ETag: cached.etag,
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "X-Cache": "HIT",
+            },
         });
       }
 
@@ -112,11 +115,11 @@ export async function GET(req: NextRequest) {
       const etag = serverCache.set(cacheKey, result, 0, ['products', cacheKey]);
 
       return NextResponse.json(result, {
-        headers: {
-          'ETag': etag,
-          'Cache-Control': 'public, max-age=60, stale-while-revalidate=86400',
-          'X-Cache': 'MISS',
-        },
+          headers: {
+              ETag: etag,
+              "Cache-Control": "no-cache, no-store, must-revalidate",
+              "X-Cache": "MISS",
+          },
       });
     }
 
@@ -130,19 +133,19 @@ export async function GET(req: NextRequest) {
     if (cached) {
       if (clientEtag && clientEtag === cached.etag) {
         return new NextResponse(null, {
-          status: 304,
-          headers: {
-            'ETag': cached.etag,
-            'Cache-Control': 'public, max-age=60, stale-while-revalidate=86400',
-          },
+            status: 304,
+            headers: {
+                ETag: cached.etag,
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+            },
         });
       }
       return NextResponse.json(cached.data, {
-        headers: {
-          'ETag': cached.etag,
-          'Cache-Control': 'public, max-age=60, stale-while-revalidate=86400',
-          'X-Cache': 'HIT',
-        },
+          headers: {
+              ETag: cached.etag,
+              "Cache-Control": "no-cache, no-store, must-revalidate",
+              "X-Cache": "HIT",
+          },
       });
     }
 
@@ -189,11 +192,11 @@ export async function GET(req: NextRequest) {
     const etag = serverCache.set(cacheKey, result, 0, ['products', cacheKey]);
 
     return NextResponse.json(result, {
-      headers: {
-        'ETag': etag,
-        'Cache-Control': 'public, max-age=60, stale-while-revalidate=86400',
-        'X-Cache': 'MISS',
-      },
+        headers: {
+            ETag: etag,
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "X-Cache": "MISS",
+        },
     });
   } catch (err: any) {
     console.error('Error fetching products:', err);
@@ -301,7 +304,8 @@ export async function POST(req: NextRequest) {
       .where(eq(productImages.productId, newProduct.id));
 
     // Invalidate product caches immediately
-    serverCache.invalidateTags(['products']);
+  serverCache.invalidateTags(["products"]);
+  serverCache.invalidatePrefix("products:");
 
     return NextResponse.json(
       {

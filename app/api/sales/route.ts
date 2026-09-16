@@ -38,12 +38,16 @@ export async function POST(req: NextRequest) {
 
         if (parsedItems.length === 0) {
             return NextResponse.json(
-                { error: "Sale must contain valid items with positive quantities." },
+                {
+                    error: "Sale must contain valid items with positive quantities.",
+                },
                 { status: 400 }
             );
         }
 
-        const productIds = Array.from(new Set(parsedItems.map((i) => i.productId)));
+        const productIds = Array.from(
+            new Set(parsedItems.map((i) => i.productId))
+        );
 
         // Batch fetch all required products in ONE query
         const existingProducts = await db
@@ -51,7 +55,7 @@ export async function POST(req: NextRequest) {
             .from(products)
             .where(inArray(products.id, productIds));
 
-        const productMap = new Map<number, typeof existingProducts[0]>();
+        const productMap = new Map<number, (typeof existingProducts)[0]>();
         for (const p of existingProducts) {
             productMap.set(p.id, p);
         }
@@ -92,7 +96,10 @@ export async function POST(req: NextRequest) {
         });
 
         // Batch insert sales
-        const createdSales = await db.insert(sales).values(salesToInsert).returning();
+        const createdSales = await db
+            .insert(sales)
+            .values(salesToInsert)
+            .returning();
 
         // Update product stocks
         for (const item of parsedItems) {
@@ -123,7 +130,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Invalidate products and sales caches
-        serverCache.invalidateTags(['products', 'sales']);
+        serverCache.invalidateTags(["products", "sales"]);
 
         return NextResponse.json(
             { success: true, sales: createdSales },
@@ -150,7 +157,9 @@ export async function GET(req: NextRequest) {
         }
 
         const { searchParams } = new URL(req.url);
-        const timeframe = (searchParams.get("timeframe") || "all").toLowerCase();
+        const timeframe = (
+            searchParams.get("timeframe") || "all"
+        ).toLowerCase();
         const staffIdParam = searchParams.get("staffId");
         const customStartDate = searchParams.get("startDate");
         const customEndDate = searchParams.get("endDate");
@@ -184,7 +193,10 @@ export async function GET(req: NextRequest) {
                 59,
                 999
             );
-        } else if (effectiveTimeframe === "week" || effectiveTimeframe === "weekly") {
+        } else if (
+            effectiveTimeframe === "week" ||
+            effectiveTimeframe === "weekly"
+        ) {
             const dayOfWeek = now.getDay();
             const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
             startBoundary = new Date(
@@ -204,7 +216,10 @@ export async function GET(req: NextRequest) {
                 59,
                 999
             );
-        } else if (effectiveTimeframe === "month" || effectiveTimeframe === "monthly") {
+        } else if (
+            effectiveTimeframe === "month" ||
+            effectiveTimeframe === "monthly"
+        ) {
             startBoundary = new Date(
                 now.getFullYear(),
                 now.getMonth(),
@@ -222,7 +237,10 @@ export async function GET(req: NextRequest) {
                 59,
                 999
             );
-        } else if (effectiveTimeframe === "year" || effectiveTimeframe === "annually") {
+        } else if (
+            effectiveTimeframe === "year" ||
+            effectiveTimeframe === "annually"
+        ) {
             startBoundary = new Date(now.getFullYear(), 0, 1, 0, 0, 0);
             endBoundary = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
         } else if (
@@ -253,28 +271,45 @@ export async function GET(req: NextRequest) {
         }
 
         // Determine SQL order by
-        let orderExpr = sortOrder === "asc" ? asc(sales.createdAt) : desc(sales.createdAt);
+        let orderExpr =
+            sortOrder === "asc" ? asc(sales.createdAt) : desc(sales.createdAt);
         if (sortBy === "quantity") {
-            orderExpr = sortOrder === "asc" ? asc(sales.quantitySold) : desc(sales.quantitySold);
+            orderExpr =
+                sortOrder === "asc"
+                    ? asc(sales.quantitySold)
+                    : desc(sales.quantitySold);
         } else if (sortBy === "price") {
-            orderExpr = sortOrder === "asc" ? asc(sales.totalAmount) : desc(sales.totalAmount);
+            orderExpr =
+                sortOrder === "asc"
+                    ? asc(sales.totalAmount)
+                    : desc(sales.totalAmount);
         }
 
         const cursor = searchParams.get("cursor");
         const limitParam = searchParams.get("limit");
-        const isPaginated = searchParams.has("limit") || searchParams.has("cursor");
+        const isPaginated =
+            searchParams.has("limit") || searchParams.has("cursor");
 
         if (isPaginated) {
-            const limit = Math.min(Math.max(1, parseInt(limitParam || "20", 10)), 100);
-            const cacheKey = `sales:${user.id}:${user.role}:${effectiveTimeframe}:${staffIdParam || 'all'}:${sortBy}:${sortOrder}:${cursor || 'first'}:${limit}`;
+            const limit = Math.min(
+                Math.max(1, parseInt(limitParam || "20", 10)),
+                100
+            );
+            const cacheKey = `sales:${user.id}:${
+                user.role
+            }:${effectiveTimeframe}:${
+                staffIdParam || "all"
+            }:${sortBy}:${sortOrder}:${cursor || "first"}:${limit}`;
 
             const cached = serverCache.get<any>(cacheKey);
             if (cached) {
                 return NextResponse.json(cached.data, {
                     headers: {
-                        'Cache-Control': 'private, max-age=30, stale-while-revalidate=120',
-                        'X-Cache': 'HIT',
-                    }
+                        "Cache-Control": "no-cache, no-store, must-revalidate",
+                        Pragma: "no-cache",
+                        Expires: "0",
+                        "X-Cache": cached ? "HIT" : "MISS",
+                    },
                 });
             }
 
@@ -291,13 +326,22 @@ export async function GET(req: NextRequest) {
             const fetchedSales = await db
                 .select()
                 .from(sales)
-                .where(paginatedConditions.length > 0 ? and(...paginatedConditions) : undefined)
+                .where(
+                    paginatedConditions.length > 0
+                        ? and(...paginatedConditions)
+                        : undefined
+                )
                 .orderBy(orderExpr)
                 .limit(queryLimit);
 
             const hasMore = fetchedSales.length > limit;
-            const pageSales = hasMore ? fetchedSales.slice(0, limit) : fetchedSales;
-            const nextCursor = hasMore && pageSales.length > 0 ? pageSales[pageSales.length - 1].createdAt : null;
+            const pageSales = hasMore
+                ? fetchedSales.slice(0, limit)
+                : fetchedSales;
+            const nextCursor =
+                hasMore && pageSales.length > 0
+                    ? pageSales[pageSales.length - 1].createdAt
+                    : null;
 
             // Also compute overall summary for the filtered timeframe conditions (without cursor boundary)
             // or we can aggregate the summary query efficiently
@@ -332,13 +376,15 @@ export async function GET(req: NextRequest) {
                 },
             };
 
-            serverCache.set(cacheKey, result, 0, ['sales', cacheKey]);
+            serverCache.set(cacheKey, result, 0, ["sales", cacheKey]);
 
             return NextResponse.json(result, {
                 headers: {
-                    'Cache-Control': 'private, max-age=30, stale-while-revalidate=120',
-                    'X-Cache': 'MISS',
-                }
+                    "Cache-Control": "no-cache, no-store, must-revalidate",
+                    Pragma: "no-cache",
+                    Expires: "0",
+                    "X-Cache": cached ? "HIT" : "MISS",
+                },
             });
         }
 
@@ -358,19 +404,22 @@ export async function GET(req: NextRequest) {
         }
         const transactionsCount = filteredSales.length;
 
-        return NextResponse.json({
-            timeframe: effectiveTimeframe,
-            sales: filteredSales,
-            summary: {
-                totalRevenue,
-                totalUnitsSold,
-                transactionsCount,
+        return NextResponse.json(
+            {
+                timeframe: effectiveTimeframe,
+                sales: filteredSales,
+                summary: {
+                    totalRevenue,
+                    totalUnitsSold,
+                    transactionsCount,
+                },
             },
-        }, {
-            headers: {
-                'Cache-Control': 'private, no-cache',
+            {
+                headers: {
+                    "Cache-Control": "private, no-cache",
+                },
             }
-        });
+        );
     } catch (err: any) {
         console.error("Error fetching sales:", err);
         return NextResponse.json(
