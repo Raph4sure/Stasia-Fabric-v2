@@ -101,8 +101,10 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
     const [inventoryProducts, setInventoryProducts] = useState<Product[]>([]);
     const [inventoryCursor, setInventoryCursor] = useState<string | null>(null);
     const [hasMoreInventory, setHasMoreInventory] = useState<boolean>(true);
-    const [isLoadingInventory, setIsLoadingInventory] = useState<boolean>(false);
-    const [isLoadingMoreInventory, setIsLoadingMoreInventory] = useState<boolean>(false);
+    const [isLoadingInventory, setIsLoadingInventory] =
+        useState<boolean>(false);
+    const [isLoadingMoreInventory, setIsLoadingMoreInventory] =
+        useState<boolean>(false);
 
     // Initial load & sync for inventory
     useEffect(() => {
@@ -123,7 +125,9 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
         setIsLoadingMoreInventory(true);
         try {
             const data = await fetchWithAuth(
-                `/api/products?limit=20&cursor=${encodeURIComponent(inventoryCursor)}`
+                `/api/products?limit=20&cursor=${encodeURIComponent(
+                    inventoryCursor
+                )}`
             );
             if (data && Array.isArray(data.products)) {
                 setInventoryProducts((prev) => {
@@ -178,7 +182,9 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
         fetch("/api/upload")
             .then((res) => res.json())
             .then((data) => setCloudinaryStatus(data))
-            .catch(() => setCloudinaryStatus({ configured: false, cloudName: null }));
+            .catch(() =>
+                setCloudinaryStatus({ configured: false, cloudName: null })
+            );
     }, []);
 
     const handleImageFiles = async (files: FileList | null) => {
@@ -213,40 +219,65 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                 }
 
                 // If Cloudinary is configured, upload via /api/upload
+                // if (cloudinaryStatus?.configured) {
+                //     const formData = new FormData();
+                //     formData.append("file", file);
+                //     formData.append("folder", "stasia_boutique/products");
+
+                //     const res = await fetch("/api/upload", {
+                //         method: "POST",
+                //         headers: {
+                //             ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                //         },
+                //         body: formData,
+                //     });
+
+                //     const data = await res.json();
+                //     if (!res.ok) {
+                //         throw new Error(data.error || `Upload failed for ${file.name}`);
+                //     }
+                //     if (data.url) {
+                //         uploadedUrls.push(data.url);
+                //     }
+                // }
                 if (cloudinaryStatus?.configured) {
                     const formData = new FormData();
                     formData.append("file", file);
                     formData.append("folder", "stasia_boutique/products");
 
-                    const res = await fetch("/api/upload", {
+                    const data = await fetchWithAuth("/api/upload", {
                         method: "POST",
-                        headers: {
-                            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-                        },
                         body: formData,
                     });
 
-                    const data = await res.json();
-                    if (!res.ok) {
-                        throw new Error(data.error || `Upload failed for ${file.name}`);
+                    if (!data?.url) {
+                        throw new Error(
+                            data?.error || `Upload failed for ${file.name}`
+                        );
                     }
-                    if (data.url) {
-                        uploadedUrls.push(data.url);
-                    }
+                    uploadedUrls.push(data.url);
                 } else {
                     // Fallback to local Data URI if Cloudinary is not yet configured
-                    const base64Str = await new Promise<string>((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(String(reader.result));
-                        reader.onerror = () => reject(new Error(`Could not read ${file.name}`));
-                        reader.readAsDataURL(file);
-                    });
+                    const base64Str = await new Promise<string>(
+                        (resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = () =>
+                                resolve(String(reader.result));
+                            reader.onerror = () =>
+                                reject(
+                                    new Error(`Could not read ${file.name}`)
+                                );
+                            reader.readAsDataURL(file);
+                        }
+                    );
                     uploadedUrls.push(base64Str);
                 }
             }
 
             setFormImageUrls((previous) => {
-                const existing = previous.filter((url) => url.trim().length > 0);
+                const existing = previous.filter(
+                    (url) => url.trim().length > 0
+                );
                 return [...existing, ...uploadedUrls].slice(0, 10);
             });
         } catch (err: any) {
@@ -282,7 +313,8 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
     // Sales Pagination State (20 records batching with cursor)
     const [salesCursor, setSalesCursor] = useState<string | null>(null);
     const [hasMoreSales, setHasMoreSales] = useState<boolean>(false);
-    const [isLoadingMoreSales, setIsLoadingMoreSales] = useState<boolean>(false);
+    const [isLoadingMoreSales, setIsLoadingMoreSales] =
+        useState<boolean>(false);
 
     // Sync sales props whenever updated from parent
     useEffect(() => {
@@ -385,10 +417,13 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
         if (!salesCursor || isLoadingMoreSales) return;
         setIsLoadingMoreSales(true);
         try {
-            let query = `/api/sales?timeframe=${salesTimeframe}&sortBy=${salesSortBy}&sortOrder=${salesSortOrder}&limit=20&cursor=${encodeURIComponent(salesCursor)}`;
+            let query = `/api/sales?timeframe=${salesTimeframe}&sortBy=${salesSortBy}&sortOrder=${salesSortOrder}&limit=20&cursor=${encodeURIComponent(
+                salesCursor
+            )}`;
             if (salesTimeframe === "custom" && customStartDate) {
                 query += `&startDate=${encodeURIComponent(customStartDate)}`;
-                if (customEndDate) query += `&endDate=${encodeURIComponent(customEndDate)}`;
+                if (customEndDate)
+                    query += `&endDate=${encodeURIComponent(customEndDate)}`;
             }
             const data = await fetchWithAuth(query);
             if (data && Array.isArray(data.sales)) {
@@ -3033,7 +3068,9 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                                         multiple
                                         disabled={isUploadingImages}
                                         onChange={(e) => {
-                                            void handleImageFiles(e.target.files);
+                                            void handleImageFiles(
+                                                e.target.files
+                                            );
                                             e.currentTarget.value = "";
                                         }}
                                         className="w-full rounded-lg border border-dashed border-amber-300 bg-amber-50/50 dark:bg-amber-950/30 px-3 py-2.5 text-xs text-stone-600 dark:text-stone-300 file:mr-3 file:rounded-lg file:border-0 file:bg-amber-500 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-stone-950 hover:border-amber-500 disabled:opacity-60 cursor-pointer"
@@ -3044,7 +3081,8 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                                     <div className="flex items-center gap-2 p-2.5 bg-amber-50 dark:bg-amber-950/40 rounded-lg text-amber-800 dark:text-amber-200 text-xs font-medium border border-amber-200 dark:border-amber-800/60 animate-pulse">
                                         <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
                                         <span>
-                                            Uploading images to Cloudinary CDN & generating secure URLs...
+                                            Uploading images to Cloudinary CDN &
+                                            generating secure URLs...
                                         </span>
                                     </div>
                                 )}
@@ -3069,7 +3107,8 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                                         }
                                         className="text-[11px] text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1 disabled:opacity-40"
                                     >
-                                        <Plus className="w-3 h-3" /> Add Image URL
+                                        <Plus className="w-3 h-3" /> Add Image
+                                        URL
                                     </button>
                                 </div>
 
@@ -3087,10 +3126,15 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                                                     {url.trim() ? (
                                                         <img
                                                             src={url}
-                                                            alt={`Product ${idx + 1}`}
+                                                            alt={`Product ${
+                                                                idx + 1
+                                                            }`}
                                                             className="w-full h-full object-cover"
                                                             onError={(e) => {
-                                                                (e.target as HTMLElement).style.display = 'none';
+                                                                (
+                                                                    e.target as HTMLElement
+                                                                ).style.display =
+                                                                    "none";
                                                             }}
                                                         />
                                                     ) : (
@@ -3114,9 +3158,14 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                                                         type="url"
                                                         value={url}
                                                         onChange={(e) => {
-                                                            const copy = [...formImageUrls];
-                                                            copy[idx] = e.target.value;
-                                                            setFormImageUrls(copy);
+                                                            const copy = [
+                                                                ...formImageUrls,
+                                                            ];
+                                                            copy[idx] =
+                                                                e.target.value;
+                                                            setFormImageUrls(
+                                                                copy
+                                                            );
                                                         }}
                                                         placeholder="https://res.cloudinary.com/... or image URL"
                                                         className="w-full px-2.5 py-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 rounded text-xs font-mono"
@@ -3127,10 +3176,15 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                                                     <button
                                                         type="button"
                                                         onClick={() => {
-                                                            const copy = formImageUrls.filter(
-                                                                (_, i) => i !== idx
+                                                            const copy =
+                                                                formImageUrls.filter(
+                                                                    (_, i) =>
+                                                                        i !==
+                                                                        idx
+                                                                );
+                                                            setFormImageUrls(
+                                                                copy
                                                             );
-                                                            setFormImageUrls(copy);
                                                         }}
                                                         className="p-1.5 text-stone-400 hover:text-rose-600 rounded"
                                                         title="Remove image"
