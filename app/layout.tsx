@@ -53,7 +53,7 @@ export const metadata: Metadata = {
         siteName: "Stasia Elegant Fabric",
         images: [
             {
-                url: "/stasia_fabrics_home.png", // Uses metadataBase
+                url: "/stasia_fabrics_home.jpg", // Uses metadataBase
                 width: 600,
                 height: 600,
                 alt: "Stasia Elegant Fabric Logo",
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
         title: "Stasia Elegant Fabric - Luxury Clothing and Bags",
         description:
             "Luxury fabrics, wrappers, bags, and other clothing boutique store.",
-        images: ["/stasia_fabrics_home.png"],
+        images: ["/stasia_fabrics_home.jpg"],
     },
 
     // 3. Search Engine Indexing rules
@@ -79,9 +79,9 @@ export const metadata: Metadata = {
     },
 
     icons: {
-        icon: "/stasia_fabrics_home.png",
-        shortcut: "/stasia_fabrics_home.png",
-        apple: "/stasia_fabrics_home.png",
+        icon: "/stasia_fabrics_home.jpg",
+        shortcut: "/stasia_fabrics_home.jpg",
+        apple: "/stasia_fabrics_home.jpg",
     },
 };
 
