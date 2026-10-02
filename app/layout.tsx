@@ -1,14 +1,90 @@
 import type { Metadata } from "next";
+// @ts-expect-error Next.js loads this global stylesheet at runtime.
 import "./globals.css";
 
+// export const metadata: Metadata = {
+//     title: "Stasia Elegant Fabric - Luxury Fabrics & Fashion Wears",
+//     description:
+//         "Luxury fabrics, clothing, wrappers bags, and accessories boutique store.",
+//     keywords: ["fabrics", "textiles", "fashion design", "luxury fabric store"],
+//     alternates: {
+//         canonical: "https://stasiafabrics.vercel.app",
+//     },
+//     openGraph: {
+//         title: "Stasia Elegant Fabric - Luxury Fabrics & Fashion Wears",
+//         description:
+//             "Luxury fabrics, clothing, wrappers bags, and accessories boutique store.",
+//         url: "https://stasiafabrics.vercel.app",
+//         siteName: "Stasia Elegant Fabric",
+//         images: [
+//             {
+//                 url: "https://stasiafabrics.vercel.app/stasia_logo.png",
+//                 width: 600,
+//                 height: 600,
+//             },
+//         ],
+//         locale: "en_US",
+//         type: "website",
+//     },
+//     icons: {
+//         icon: "https://stasiafabrics.vercel.app/stasia_logo.png",
+//         shortcut: "/stasia_logo.png",
+//         apple: "https://stasiafabrics.vercel.app/stasia_logo.png",
+//     },
+// };
+
+
 export const metadata: Metadata = {
-  title: "Stasia Elegant Fabric - Luxury Fabrics & Fashion Wears",
-  description: "Luxury fabrics, clothing, wrappers, and accessories boutique store.",
-  icons: {
-    icon: "/stasia_logo.png",
-    shortcut: "/stasia_logo.png",
-    apple: "/stasia_logo.png",
-  },
+    // 1. Automatically converts relative paths like "/stasia_logo.png" into full absolute URLs
+    metadataBase: new URL("https://stasiafabrics.vercel.app"),
+
+    title: "Stasia Elegant Fabric - Luxury Fabrics & Fashion Wears",
+    description:
+        "Luxury fabrics, clothing, wrappers, bags, and accessories boutique store.",
+    keywords: ["fabrics", "textiles", "fashion design", "luxury fabric store"],
+
+    alternates: {
+        canonical: "/", // Automatically becomes https://stasiafabrics.vercel.app
+    },
+
+    openGraph: {
+        title: "Stasia Elegant Fabric - Luxury Fabrics & Fashion Wears",
+        description:
+            "Luxury fabrics, clothing, wrappers, bags, and accessories boutique store.",
+        url: "/",
+        siteName: "Stasia Elegant Fabric",
+        images: [
+            {
+                url: "/stasia_logo.png", // Uses metadataBase
+                width: 600,
+                height: 600,
+                alt: "Stasia Elegant Fabric Logo",
+            },
+        ],
+        locale: "en_US",
+        type: "website",
+    },
+
+    // 2. Added Twitter Card configuration for full social platform coverage
+    twitter: {
+        card: "summary", // Square image thumbnail format (perfect for 600x600 logos)
+        title: "Stasia Elegant Fabric - Luxury Fabrics & Fashion Wears",
+        description:
+            "Luxury fabrics, clothing, wrappers, bags, and accessories boutique store.",
+        images: ["/stasia_logo.png"],
+    },
+
+    // 3. Search Engine Indexing rules
+    robots: {
+        index: true,
+        follow: true,
+    },
+
+    icons: {
+        icon: "/stasia_logo.png",
+        shortcut: "/stasia_logo.png",
+        apple: "/stasia_logo.png",
+    },
 };
 
 export default function RootLayout({
