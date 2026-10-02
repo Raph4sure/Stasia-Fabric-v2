@@ -32,7 +32,6 @@ import "./globals.css";
 //     },
 // };
 
-
 export const metadata: Metadata = {
     // 1. Automatically converts relative paths like "/stasia_logo.png" into full absolute URLs
     metadataBase: new URL("https://stasiafabrics.vercel.app"),
@@ -54,7 +53,7 @@ export const metadata: Metadata = {
         siteName: "Stasia Elegant Fabric",
         images: [
             {
-                url: "/stasia_logo.png", // Uses metadataBase
+                url: "/stasia_fabrics_home.png", // Uses metadataBase
                 width: 600,
                 height: 600,
                 alt: "Stasia Elegant Fabric Logo",
@@ -70,7 +69,7 @@ export const metadata: Metadata = {
         title: "Stasia Elegant Fabric - Luxury Fabrics & Fashion Wears",
         description:
             "Luxury fabrics, clothing, wrappers, bags, and accessories boutique store.",
-        images: ["/stasia_logo.png"],
+        images: ["/stasia_fabrics_home.png"],
     },
 
     // 3. Search Engine Indexing rules
@@ -80,22 +79,22 @@ export const metadata: Metadata = {
     },
 
     icons: {
-        icon: "/stasia_logo.png",
-        shortcut: "/stasia_logo.png",
-        apple: "/stasia_logo.png",
+        icon: "/stasia_fabrics_home.png",
+        shortcut: "/stasia_fabrics_home.png",
+        apple: "/stasia_fabrics_home.png",
     },
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: {
-  children: React.ReactNode;
+    children: React.ReactNode;
 }) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="antialiased min-h-screen bg-[#faf8f5] dark:bg-[#0c0c0e] text-stone-900 dark:text-stone-100 font-sans transition-colors duration-200">
-        {children}
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en" suppressHydrationWarning>
+            <body className="antialiased min-h-screen bg-[#faf8f5] dark:bg-[#0c0c0e] text-stone-900 dark:text-stone-100 font-sans transition-colors duration-200">
+                {children}
+            </body>
+        </html>
+    );
 }
