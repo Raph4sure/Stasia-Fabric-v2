@@ -147,13 +147,13 @@ export const RecentlyAddedSlideshow: React.FC<RecentlyAddedSlideshowProps> = ({
                     <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-sans font-medium tracking-wide bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 shadow-2xs">
                         <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                         <span className="font-semibold">
-                            New Arrivals Showcase
+                            New Items Display Galley
                         </span>
                     </div>
 
                     <span className="hidden md:inline-flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400 font-sans">
                         <Clock className="w-3.5 h-3.5" />
-                        <span>Latest designs first</span>
+                        <span>Latest arrival first</span>
                     </span>
                 </div>
 
@@ -161,7 +161,8 @@ export const RecentlyAddedSlideshow: React.FC<RecentlyAddedSlideshowProps> = ({
                 <div className="flex items-center gap-2">
                     <div className="text-xs text-stone-600 dark:text-stone-300 px-2.5 py-1 rounded-lg bg-stone-100 dark:bg-stone-800/70 border border-stone-200/70 dark:border-stone-700/60 font-sans font-medium">
                         <span className="text-amber-600 dark:text-amber-400 font-bold">
-                            Item {currentIndex + 1}
+                            {/* Displaying Item No: {currentIndex + 1} */}
+                            Displaying Items
                         </span>
                     </div>
 
@@ -249,21 +250,23 @@ export const RecentlyAddedSlideshow: React.FC<RecentlyAddedSlideshowProps> = ({
                                 "shadow-2xl ring-1 ring-black/5 dark:ring-white/10";
                         } else if (isLeft) {
                             // Previous card on the left side: scaled down, tucked behind
-                                transformClass =
+                            transformClass =
                                 "-translate-x-[62%] sm:-translate-x-[68%] md:-translate-x-[72%] lg:-translate-x-[76%] scale-[0.72] sm:scale-[0.82]";
                             zIndexClass = "z-20";
-                            opacityClass = "opacity-60 sm:opacity-70 hover:opacity-90";
+                            opacityClass =
+                                "opacity-60 sm:opacity-70 hover:opacity-90";
                             shadowClass = "shadow-xl";
                         } else if (isRight) {
                             // Upcoming new card on the right side: scaled down, tucked behind
-                                transformClass =
+                            transformClass =
                                 "translate-x-[62%] sm:translate-x-[68%] md:translate-x-[72%] lg:translate-x-[76%] scale-[0.72] sm:scale-[0.82]";
                             zIndexClass = "z-20";
-                            opacityClass = "opacity-60 sm:opacity-70 hover:opacity-90";
+                            opacityClass =
+                                "opacity-60 sm:opacity-70 hover:opacity-90";
                             shadowClass = "shadow-xl";
                         } else if (isFarLeft) {
                             // Far left preview (if total items >= 5)
-                                transformClass =
+                            transformClass =
                                 "-translate-x-[105%] sm:-translate-x-[118%] md:-translate-x-[128%] scale-[0.58] sm:scale-[0.68]";
                             zIndexClass = "z-10";
                             opacityClass =
@@ -271,7 +274,7 @@ export const RecentlyAddedSlideshow: React.FC<RecentlyAddedSlideshowProps> = ({
                             shadowClass = "shadow-md";
                         } else if (isFarRight) {
                             // Far right preview (if total items >= 5)
-                                transformClass =
+                            transformClass =
                                 "translate-x-[105%] sm:translate-x-[118%] md:translate-x-[128%] scale-[0.58] sm:scale-[0.68]";
                             zIndexClass = "z-10";
                             opacityClass =
@@ -410,6 +413,7 @@ export const RecentlyAddedSlideshow: React.FC<RecentlyAddedSlideshowProps> = ({
                 </div>
 
                 {/* Direct Call to Action button */}
+
                 <div className="mt-3.5 flex items-center justify-center gap-3">
                     <button
                         type="button"
@@ -424,26 +428,28 @@ export const RecentlyAddedSlideshow: React.FC<RecentlyAddedSlideshowProps> = ({
 
                 {/* Carousel Dot Indicators */}
                 {total > 1 && (
-                    <div className="flex items-center justify-center gap-1.5 mt-5 flex-wrap max-w-md">
-                        {sortedProducts.map((p, idx) => {
-                            const isCurrent = idx === currentIndex;
-                            return (
-                                <button
-                                    key={p.id}
-                                    type="button"
-                                    onClick={() => goToIndex(idx)}
-                                    aria-label={`Slide to piece ${idx + 1}: ${
-                                        p.title
-                                    }`}
-                                    className={`transition-all duration-300 rounded-full cursor-pointer ${
-                                        isCurrent
-                                            ? "w-6 h-2 bg-amber-500 dark:bg-amber-400"
-                                            : "w-2 h-2 bg-stone-300 hover:bg-stone-400 dark:bg-stone-700 dark:hover:bg-stone-600"
-                                    }`}
-                                    title={`${p.title} (${p.codeNo})`}
-                                />
-                            );
-                        })}
+                    <div className="flex overflow-x-auto scrollbar-hover w-sm lg:w-xl">
+                        <div className="flex items-center justify-center gap-1.5 mt-5 ">
+                            {sortedProducts.map((p, idx) => {
+                                const isCurrent = idx === currentIndex;
+                                return (
+                                    <button
+                                        key={p.id}
+                                        type="button"
+                                        onClick={() => goToIndex(idx)}
+                                        aria-label={`Slide to piece ${
+                                            idx + 1
+                                        }: ${p.title}`}
+                                        className={`transition-all duration-300 rounded-full cursor-pointer ${
+                                            isCurrent
+                                                ? "w-6 h-2 bg-amber-500 dark:bg-amber-400"
+                                                : "w-2 h-2 bg-stone-300 hover:bg-stone-400 dark:bg-stone-700 dark:hover:bg-stone-600"
+                                        }`}
+                                        title={`${p.title} (${p.codeNo})`}
+                                    />
+                                );
+                            })}
+                        </div>
                     </div>
                 )}
             </div>

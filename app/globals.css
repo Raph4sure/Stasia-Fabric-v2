@@ -10,6 +10,40 @@
         serif;
 }
 
+/* Custom Scrollbar Utility */
+.scrollbar-hover {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.scrollbar-hover::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+.scrollbar-hover:hover {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(168, 162, 158, 0.5) transparent;
+}
+
+.scrollbar-hover:hover::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+.scrollbar-hover:hover::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollbar-hover:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(168, 162, 158, 0.5);
+    border-radius: 9999px;
+}
+
+.scrollbar-hover:hover::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(120, 113, 108, 0.8);
+}
+
 /* Base theme transition & styles */
 html {
     transition: background-color 0.25s ease, color 0.25s ease;
