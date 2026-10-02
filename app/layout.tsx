@@ -36,19 +36,19 @@ export const metadata: Metadata = {
     // 1. Automatically converts relative paths like "/stasia_logo.png" into full absolute URLs
     metadataBase: new URL("https://stasiafabrics.vercel.app"),
 
-    title: "Stasia Elegant Fabric - Luxury Fabrics & Fashion Wears",
+    title: "Stasia Elegant Fabric - Luxury Clothing and Bags",
     description:
-        "Luxury fabrics, clothing, wrappers, bags, and accessories boutique store.",
-    keywords: ["fabrics", "textiles", "fashion design", "luxury fabric store"],
+        "Luxury fabrics, wrappers, bags, and other clothing boutique store.",
+    keywords: ["fabrics", "wrappers", "bags", "luxury fabric store"],
 
     alternates: {
         canonical: "/", // Automatically becomes https://stasiafabrics.vercel.app
     },
 
     openGraph: {
-        title: "Stasia Elegant Fabric - Luxury Fabrics & Fashion Wears",
+        title: "Stasia Elegant Fabric - Luxury Clothing and Bags",
         description:
-            "Luxury fabrics, clothing, wrappers, bags, and accessories boutique store.",
+            "Luxury fabrics, wrappers, bags, and other clothing boutique store.",
         url: "/",
         siteName: "Stasia Elegant Fabric",
         images: [
@@ -66,9 +66,9 @@ export const metadata: Metadata = {
     // 2. Added Twitter Card configuration for full social platform coverage
     twitter: {
         card: "summary", // Square image thumbnail format (perfect for 600x600 logos)
-        title: "Stasia Elegant Fabric - Luxury Fabrics & Fashion Wears",
+        title: "Stasia Elegant Fabric - Luxury Clothing and Bags",
         description:
-            "Luxury fabrics, clothing, wrappers, bags, and accessories boutique store.",
+            "Luxury fabrics, wrappers, bags, and other clothing boutique store.",
         images: ["/stasia_fabrics_home.png"],
     },
 
