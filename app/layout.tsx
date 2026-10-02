@@ -32,47 +32,55 @@ import "./globals.css";
 //     },
 // };
 
+import type { Metadata } from "next";
+
 export const metadata: Metadata = {
-    // 1. Automatically converts relative paths like "/stasia_logo.png" into full absolute URLs
+    // 1. Automatically converts relative paths into full absolute URLs
     metadataBase: new URL("https://stasiafabrics.vercel.app"),
 
     title: "Stasia Elegant Fabric - Luxury Clothing and Bags",
     description:
-        "Luxury fabrics, wrappers, bags, and other clothing boutique store.",
-    keywords: ["fabrics", "wrappers", "bags", "luxury fabric store"],
+        "Discover luxury fabrics, premium textiles, custom clothing, wrappers, bags, and fashion accessories at Stasia Elegant Fabric boutique store.",
+
+    keywords: [
+        "fabrics",
+        "wrappers",
+        "bags",
+        "luxury fabric store",
+        "textiles",
+    ],
 
     alternates: {
-        canonical: "/", // Automatically becomes https://stasiafabrics.vercel.app
+        canonical: "/",
     },
 
     openGraph: {
         title: "Stasia Elegant Fabric - Luxury Clothing and Bags",
         description:
-            "Luxury fabrics, wrappers, bags, and other clothing boutique store.",
+            "Discover luxury fabrics, premium textiles, custom clothing, wrappers, bags, and fashion accessories at Stasia Elegant Fabric boutique store.",
         url: "/",
         siteName: "Stasia Elegant Fabric",
         images: [
             {
-                url: "/stasia_fabrics_home.jpg", // Uses metadataBase
-                width: 600,
-                height: 600,
-                alt: "Stasia Elegant Fabric Logo",
+                url: "/stasia_fabrics_home.jpg",
+                width: 1200, //
+                height: 630, //
+                alt: "Stasia Elegant Fabric Showcase",
             },
         ],
         locale: "en_US",
         type: "website",
     },
 
-    // 2. Added Twitter Card configuration for full social platform coverage
+    
     twitter: {
-        card: "summary", // Square image thumbnail format (perfect for 600x600 logos)
+        card: "summary_large_image", //
         title: "Stasia Elegant Fabric - Luxury Clothing and Bags",
         description:
-            "Luxury fabrics, wrappers, bags, and other clothing boutique store.",
+            "Discover luxury fabrics, premium textiles, custom clothing, wrappers, bags, and fashion accessories.",
         images: ["/stasia_fabrics_home.jpg"],
     },
 
-    // 3. Search Engine Indexing rules
     robots: {
         index: true,
         follow: true,
@@ -84,7 +92,6 @@ export const metadata: Metadata = {
         apple: "/stasia_fabrics_home.jpg",
     },
 };
-
 export default function RootLayout({
     children,
 }: {
