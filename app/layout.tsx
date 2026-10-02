@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 
     title: "Stasia Elegant Fabric - Luxury Clothing and Bags",
     description:
-        "Discover luxury fabrics, premium textiles, custom clothing, wrappers, bags, and fashion accessories at Stasia Elegant Fabric boutique store.",
+        "Discover luxury fabrics, premium textiles, wrappers, bags, and fashion accessories at Stasia Elegant Fabric boutique store.",
 
     keywords: [
         "fabrics",
