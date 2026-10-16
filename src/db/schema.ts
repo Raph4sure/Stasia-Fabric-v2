@@ -62,26 +62,28 @@ export const productImages = pgTable(
 );
 
 export const sales = pgTable(
-    'sales',
+    "sales",
     {
-        id: serial('id').primaryKey(),
-        productId: integer('product_id')
+        id: serial("id").primaryKey(),
+        productId: integer("product_id")
             .notNull()
             .references(() => products.id),
-        productTitle: text('product_title').notNull(),
-        productCode: text('product_code').notNull(),
-        quantitySold: integer('quantity_sold').notNull(),
-        unitPrice: integer('unit_price').notNull(),
-        totalAmount: integer('total_amount').notNull(),
-        soldByUserId: integer('sold_by_user_id').notNull(),
-        createdAt: text('created_at')
+        productTitle: text("product_title").notNull(),
+        productCode: text("product_code").notNull(),
+        quantitySold: integer("quantity_sold").notNull(),
+        unitPrice: integer("unit_price").notNull(),
+        totalAmount: integer("total_amount").notNull(),
+        soldByUserId: integer("sold_by_user_id").notNull(),
+        soldByUserEmail: text("sold_by_user_email").notNull(),
+        createdAt: text("created_at")
             .notNull()
             .$defaultFn(() => new Date().toISOString()),
     },
     (t) => [
-        index('idx_sales_created_at').on(t.createdAt),
-        index('idx_sales_sold_by').on(t.soldByUserId),
-        index('idx_sales_prod_id').on(t.productId),
+        index("idx_sales_created_at").on(t.createdAt),
+        index("idx_sales_sold_by").on(t.soldByUserId),
+        index("idx_sales_sold_by_email").on(t.soldByUserEmail),
+        index("idx_sales_prod_id").on(t.productId),
     ]
 );
 

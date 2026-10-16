@@ -91,6 +91,7 @@ export async function POST(req: NextRequest) {
                 unitPrice: product.pricePerUnit,
                 totalAmount,
                 soldByUserId: user.id,
+                soldByUserEmail:user.email,
                 createdAt: now,
             };
         });

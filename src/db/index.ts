@@ -11,7 +11,9 @@ import fs from "fs";
 const neonUrl = process.env.DATABASE_URL || process.env.NEON_DATABASE_URL;
 
 let drizzleInstance: any = null;
-let rawExecuteFn: ((sqlQuery: string, params?: any[]) => Promise<{ rows: any[] }>) | null = null;
+let rawExecuteFn:
+    | ((sqlQuery: string, params?: any[]) => Promise<{ rows: any[] }>)
+    | null = null;
 let pgliteInstance: PGlite | null = null;
 
 // Initialize driver based on environment
@@ -23,7 +25,7 @@ if (neonUrl && neonUrl.startsWith("postgres")) {
         let pIndex = 1;
         const pgSql = sqlQuery.replace(/\?/g, () => `$${pIndex++}`);
         const res: any = await (sql as any).query(pgSql, params);
-        const rows = Array.isArray(res) ? res : (res?.rows || []);
+        const rows = Array.isArray(res) ? res : res?.rows || [];
         return { rows };
     };
 } else {
@@ -42,7 +44,7 @@ if (neonUrl && neonUrl.startsWith("postgres")) {
         let pIndex = 1;
         const pgSql = sqlQuery.replace(/\?/g, () => `$${pIndex++}`);
         const result = await pgliteInstance!.query(pgSql, params);
-        return { rows: (result && result.rows) ? (result.rows as any[]) : [] };
+        return { rows: result && result.rows ? (result.rows as any[]) : [] };
     };
 }
 
@@ -51,7 +53,7 @@ export const db = drizzleInstance;
 export const client = {
     execute: async (input: string | { sql: string; args?: any[] }) => {
         const query = typeof input === "string" ? input : input.sql;
-        const params = typeof input === "string" ? [] : (input.args || []);
+        const params = typeof input === "string" ? [] : input.args || [];
         if (!rawExecuteFn) {
             throw new Error("Database client not initialized");
         }
@@ -117,8 +119,31 @@ async function runDatabaseInitialization() {
                 unit_price INTEGER NOT NULL,
                 total_amount INTEGER NOT NULL,
                 sold_by_user_id INTEGER NOT NULL,
+                sold_by_user_email TEXT NOT NULL,
                 created_at TEXT NOT NULL
             );
+        `);
+
+        // Keep existing databases aligned with the current sales schema.
+        await client.execute(`
+            ALTER TABLE sales
+            ADD COLUMN IF NOT EXISTS sold_by_user_email TEXT;
+        `);
+        await client.execute(`
+            UPDATE sales AS s
+            SET sold_by_user_email = u.email
+            FROM users AS u
+            WHERE s.sold_by_user_id = u.id
+              AND s.sold_by_user_email IS NULL;
+        `);
+        await client.execute(`
+            UPDATE sales
+            SET sold_by_user_email = 'Unknown'
+            WHERE sold_by_user_email IS NULL;
+        `);
+        await client.execute(`
+            ALTER TABLE sales
+            ALTER COLUMN sold_by_user_email SET NOT NULL;
         `);
 
         await client.execute(`
@@ -145,25 +170,56 @@ async function runDatabaseInitialization() {
         `);
 
         // High performance indexes for fast catalog searches, filtering, and sales aggregations
-        await client.execute(`CREATE INDEX IF NOT EXISTS idx_products_is_avail ON products(is_available);`);
-        await client.execute(`CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);`);
-        await client.execute(`CREATE INDEX IF NOT EXISTS idx_products_code_no ON products(code_no);`);
-        await client.execute(`CREATE INDEX IF NOT EXISTS idx_products_created_at ON products(created_at DESC);`);
-        await client.execute(`CREATE INDEX IF NOT EXISTS idx_products_avail_cat ON products(is_available, category);`);
-        await client.execute(`CREATE INDEX IF NOT EXISTS idx_prod_images_prod_id ON product_images(product_id);`);
-        await client.execute(`CREATE INDEX IF NOT EXISTS idx_sales_created_at ON sales(created_at DESC);`);
-        await client.execute(`CREATE INDEX IF NOT EXISTS idx_sales_sold_by ON sales(sold_by_user_id);`);
-        await client.execute(`CREATE INDEX IF NOT EXISTS idx_sales_prod_id ON sales(product_id);`);
-        await client.execute(`CREATE INDEX IF NOT EXISTS idx_saved_carts_code ON saved_carts(code);`);
-        await client.execute(`CREATE INDEX IF NOT EXISTS idx_saved_carts_status ON saved_carts(status);`);
-        await client.execute(`CREATE INDEX IF NOT EXISTS idx_saved_carts_created_at ON saved_carts(created_at DESC);`);
+        await client.execute(
+            `CREATE INDEX IF NOT EXISTS idx_products_is_avail ON products(is_available);`
+        );
+        await client.execute(
+            `CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);`
+        );
+        await client.execute(
+            `CREATE INDEX IF NOT EXISTS idx_products_code_no ON products(code_no);`
+        );
+        await client.execute(
+            `CREATE INDEX IF NOT EXISTS idx_products_created_at ON products(created_at DESC);`
+        );
+        await client.execute(
+            `CREATE INDEX IF NOT EXISTS idx_products_avail_cat ON products(is_available, category);`
+        );
+        await client.execute(
+            `CREATE INDEX IF NOT EXISTS idx_prod_images_prod_id ON product_images(product_id);`
+        );
+        await client.execute(
+            `CREATE INDEX IF NOT EXISTS idx_sales_created_at ON sales(created_at DESC);`
+        );
+        await client.execute(
+            `CREATE INDEX IF NOT EXISTS idx_sales_sold_by ON sales(sold_by_user_id);`
+        );
+        await client.execute(
+            `CREATE INDEX IF NOT EXISTS idx_sales_sold_by_email ON sales(sold_by_user_email);`
+        );
+        await client.execute(
+            `CREATE INDEX IF NOT EXISTS idx_sales_prod_id ON sales(product_id);`
+        );
+        await client.execute(
+            `CREATE INDEX IF NOT EXISTS idx_saved_carts_code ON saved_carts(code);`
+        );
+        await client.execute(
+            `CREATE INDEX IF NOT EXISTS idx_saved_carts_status ON saved_carts(status);`
+        );
+        await client.execute(
+            `CREATE INDEX IF NOT EXISTS idx_saved_carts_created_at ON saved_carts(created_at DESC);`
+        );
 
         // Check if super admin account exists
-        const existingUsers = await client.execute(`SELECT COUNT(*) as count FROM users;`);
+        const existingUsers = await client.execute(
+            `SELECT COUNT(*) as count FROM users;`
+        );
         const userCount = Number(existingUsers.rows[0]?.count || 0);
 
-        const superAdminEmail = process.env.SUPER_ADMIN_EMAIL || "raph4sure007@gmail.com";
-        const superAdminPassword = process.env.SUPER_ADMIN_PASSWORD || "MA45goes@";
+        const superAdminEmail =
+            process.env.SUPER_ADMIN_EMAIL || "raph4sure007@gmail.com";
+        const superAdminPassword =
+            process.env.SUPER_ADMIN_PASSWORD || "MA45goes@";
         const salesStaffEmail = process.env.SALES_STAFF_EMAIL;
         const salesStaffPassword = process.env.SALES_STAFF_PASSWORD;
 
@@ -179,14 +235,20 @@ async function runDatabaseInitialization() {
                 const staffHash = await bcrypt.hash(salesStaffPassword, 10);
                 await client.execute({
                     sql: `INSERT INTO users (email, password_hash, role, created_at) VALUES ($1, $2, 'ADMIN', $3);`,
-                    args: [salesStaffEmail.trim().toLowerCase(), staffHash, now],
+                    args: [
+                        salesStaffEmail.trim().toLowerCase(),
+                        staffHash,
+                        now,
+                    ],
                 });
             }
             console.log("Initial admin accounts seeded in PostgreSQL.");
         }
 
         // Check if sample boutique catalog products need initial seeding
-        const existingProducts = await client.execute(`SELECT COUNT(*) as count FROM products;`);
+        const existingProducts = await client.execute(
+            `SELECT COUNT(*) as count FROM products;`
+        );
         const productCount = Number(existingProducts.rows[0]?.count || 0);
 
         // if (productCount === 0) {

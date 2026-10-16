@@ -37,7 +37,7 @@ export interface Sale {
     unitPrice: number;
     totalAmount: number;
     soldByUserId: number;
-    soldByEmail?: string;
+    soldByUserEmail?: string;
     createdAt: string;
 }
 
@@ -71,7 +71,7 @@ export interface SavedCart {
 }
 
 export interface SalesReportFilter {
-    timeframe: "daily" | "weekly" | "monthly" | "annually" | "custom";
+    timeframe: "all" | "daily" | "weekly" | "monthly" | "annually" | "custom";
     startDate?: string;
     endDate?: string;
 }

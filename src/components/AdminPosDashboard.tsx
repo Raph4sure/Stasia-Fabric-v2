@@ -900,8 +900,8 @@ export const AdminPosDashboard: React.FC<AdminPosDashboardProps> = ({
                                 inventory
                             </p>
                         </div>
-
                         {/* Receipt Summary */}
+                        {/* console.log(currentUser.email); */}
                         <div className="py-4 space-y-3 font-mono text-xs border-b border-stone-200 dark:border-stone-800">
                             <div className="flex justify-between text-stone-500 dark:text-stone-400">
                                 <span>Date & Time</span>
@@ -945,7 +945,6 @@ export const AdminPosDashboard: React.FC<AdminPosDashboardProps> = ({
                                 </span>
                             </div>
                         </div>
-
                         {/* Actions */}
                         <div className="pt-4 flex items-center gap-3">
                             <button

@@ -296,8 +296,8 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
 
     // Sales Log filters
     const [salesTimeframe, setSalesTimeframe] = useState<
-        "daily" | "weekly" | "monthly" | "annually" | "custom"
-    >("daily");
+        "all" | "daily" | "weekly" | "monthly" | "annually" | "custom"
+    >("all");
     const [customStartDate, setCustomStartDate] = useState("");
     const [customEndDate, setCustomEndDate] = useState("");
     const [salesSortBy, setSalesSortBy] = useState<
@@ -615,6 +615,34 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                 (p.weightPerUnit !== undefined ? p.weightPerUnit : 0) *
                     p.quantityInStock
             )
+        );
+    };
+
+    const handleInlineQuantityChange = (quantityValue: string) => {
+        const previousQuantity = parseInt(editQuantity || "0", 10);
+        const currentTotalWeight = parseFloat(editTotalWeight || "0");
+        const nextQuantity = parseInt(quantityValue || "0", 10);
+        const weightPerUnit =
+            previousQuantity > 0 ? currentTotalWeight / previousQuantity : 0;
+
+        setEditQuantity(quantityValue);
+        if (quantityValue === "") return;
+        setEditTotalWeight(
+            String(nextQuantity > 0 ? weightPerUnit * nextQuantity : 0)
+        );
+    };
+
+    const handleFormQuantityChange = (quantityValue: string) => {
+        const previousQuantity = parseInt(formQuantity || "0", 10);
+        const currentTotalWeight = parseFloat(formTotalWeight || "0");
+        const nextQuantity = parseInt(quantityValue || "0", 10);
+        const weightPerUnit =
+            previousQuantity > 0 ? currentTotalWeight / previousQuantity : 0;
+
+        setFormQuantity(quantityValue);
+        if (quantityValue === "") return;
+        setFormTotalWeight(
+            String(nextQuantity > 0 ? weightPerUnit * nextQuantity : 0)
         );
     };
 
@@ -1492,7 +1520,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                                                                     editQuantity
                                                                 }
                                                                 onChange={(e) =>
-                                                                    setEditQuantity(
+                                                                    handleInlineQuantityChange(
                                                                         e.target
                                                                             .value
                                                                     )
@@ -1884,6 +1912,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                             </span>
                             {(
                                 [
+                                    "all",
                                     "daily",
                                     "weekly",
                                     "monthly",
@@ -1903,7 +1932,11 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                                             : "bg-stone-100 text-stone-600 hover:bg-stone-200"
                                     }`}
                                 >
-                                    {tf === "daily" ? "Daily (Today)" : tf}
+                                    {tf === "all"
+                                        ? "All Transactions"
+                                        : tf === "daily"
+                                        ? "Daily (Today)"
+                                        : tf}
                                 </button>
                             ))}
                         </div>
@@ -2090,8 +2123,8 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                                                         sale.totalAmount
                                                     )}
                                                 </td>
-                                                <td className="py-2.5 px-4 text-stone-500 text-[11px] truncate max-w-[150px]">
-                                                    {sale.soldByEmail ||
+                                                <td className="py-2.5 px-4 text-stone-500 text-[11px] truncate max-w-37.5">
+                                                    {sale.soldByUserEmail ||
                                                         `User #${sale.soldByUserId}`}
                                                 </td>
                                             </tr>
@@ -2919,7 +2952,9 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                                         required
                                         value={formQuantity}
                                         onChange={(e) =>
-                                            setFormQuantity(e.target.value)
+                                            handleFormQuantityChange(
+                                                e.target.value
+                                            )
                                         }
                                         placeholder="15"
                                         className="w-full px-3 py-2 bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 rounded-lg font-mono focus:outline-none focus:ring-1 focus:ring-amber-500 text-sm"
@@ -2973,7 +3008,9 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                                         required
                                         value={formQuantity}
                                         onChange={(e) =>
-                                            setFormQuantity(e.target.value)
+                                            handleFormQuantityChange(
+                                                e.target.value
+                                            )
                                         }
                                         placeholder="15"
                                         className="w-full px-3 py-2 bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 rounded-lg font-mono focus:outline-none focus:ring-1 focus:ring-amber-500 text-sm"
